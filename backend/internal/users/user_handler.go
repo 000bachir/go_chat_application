@@ -1,0 +1,56 @@
+package users
+
+import (
+	"net/http"
+
+	"github.com/gin-gonic/gin"
+)
+
+type Handler struct {
+	Service
+}
+
+// NewHandler initializes a new Handler instance with the provided Service.
+// It returns a pointer to the newly created Handler.
+func NewHandler(s Service) *Handler {
+	return &Handler{
+		Service: s, // Assigns the provided service to the Handler struct.
+	}
+}
+
+// CreateNewUser handles the creation of a new user.
+// It binds the incoming JSON request to a CreateUserRequest struct,
+// calls the service layer to create a user, and returns the response.
+func (handle Handler) CreateNewUser(context *gin.Context) {
+	var userRequest CreateUserRequest
+
+	// Bind the incoming JSON request body to the userRequest struct.
+	err := context.ShouldBindJSON(&userRequest)
+	if err != nil {
+		// If binding fails, return a 400 Bad Request response with the error message.
+		context.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	// Call the service layer to create a new user.
+	response, err := handle.Service.CreateNewUser(context.Request.Context(), &userRequest)
+	if err != nil {
+		// If an error occurs while creating the user, return a 500 Internal Server Error response.
+		context.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return // Added return to prevent sending multiple responses.
+	}
+
+	// If successful, return a 200 OK response with the newly created user data.
+	context.JSON(http.StatusOK, response)
+}
+
+func (handle *Handler) Login(ctx *gin.Context) {
+	var user LoginUserRequest
+	if err := ctx.ShouldBindJSON(&user); err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	u, err := handle.Login(ctx.Request.Context()), &user
+
+}

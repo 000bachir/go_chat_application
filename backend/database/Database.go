@@ -37,6 +37,6 @@ func (database *Database) GetDatabase() *sql.DB {
 	return database.db
 }
 
-func (database *Database) CloseDatabse() {
+func (database *Database) Close() {
 	database.db.Close()
 }
