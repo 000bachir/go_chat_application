@@ -21,7 +21,7 @@ func NewHandler(s Service) *Handler {
 // CreateNewUser handles the creation of a new user.
 // It binds the incoming JSON request to a CreateUserRequest struct,
 // calls the service layer to create a user, and returns the response.
-func (handle Handler) CreateNewUser(context *gin.Context) {
+func (handle *Handler) CreateNewUser(context *gin.Context) {
 	var userRequest CreateUserRequest
 
 	// Bind the incoming JSON request body to the userRequest struct.
@@ -46,11 +46,24 @@ func (handle Handler) CreateNewUser(context *gin.Context) {
 
 func (handle *Handler) Login(ctx *gin.Context) {
 	var user LoginUserRequest
-	if err := ctx.ShouldBindJSON(&user); err != nil {
+	err := ctx.ShouldBindJSON(&user)
+	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
+	U, err := handle.Service.LoginUser(ctx.Request.Context(), &user)
 
-	u, err := handle.Login(ctx.Request.Context()), &user
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
 
+	ctx.SetCookie("jwt", U.accessToken, 60*60*24, "/", "localhost", false, true)
+	ctx.JSON(http.StatusOK, U)
+
+}
+
+func (h *Handler) Logout(ctx *gin.Context) {
+	ctx.SetCookie("jwt", "", -1, "", "", false, true)
+	ctx.JSON(http.StatusOK, gin.H{"message": "logout successful"})
 }
