@@ -3,32 +3,32 @@ package users
 import "context"
 
 type User struct {
-	ID       int64  `json:"id"`
-	Username string `json:"username"`
-	Email    string `json:"email"`
-	Password string `json:"password"`
+	ID       int64  `json:"id" db:"id"`
+	Username string `json:"username" db:"username"`
+	Email    string `json:"email" db:"email"`
+	Password string `json:"password" db:"password"`
 }
 
 type CreateUserRequest struct {
-	Username string `json:"username"`
-	Email    string `json:"email"`
-	Password string `json:"password"`
+	Username string `json:"username" db:"username"`
+	Email    string `json:"email" db:"email"`
+	Password string `json:"password" db:"password"`
 }
 type CreateUserResponse struct {
-	ID       string `json:"id"`
-	Username string `json:"username" `
-	Email    string `json:"email"`
+	ID       string `json:"id" db:"id"`
+	Username string `json:"username" db:"username"`
+	Email    string `json:"email" db:"email"`
 }
 
 type LoginUserRequest struct {
-	Email    string `json:"email"`
-	Password string `json:"password"`
+	Email    string `json:"email" db:"email"`
+	Password string `json:"password" db:"password"`
 }
 type LoginUserResponse struct {
 	// not to be returned to the user
-	accessToken string
-	ID          string `json:"id" `
-	Username    string `json:"username"`
+	AccessToken string
+	ID          string `json:"id" db:"id"`
+	Username    string `json:"username" db:"username"`
 }
 
 // interfaces declarations

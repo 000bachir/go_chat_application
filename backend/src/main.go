@@ -3,6 +3,7 @@ package main
 import (
 	"chat_application/database"
 	"chat_application/internal/users"
+	"chat_application/internal/websocket"
 	"chat_application/router"
 	_ "fmt"
 	"log"
@@ -20,7 +21,11 @@ func main() {
 	userService := users.NewService(userRepo)
 	userHandler := users.NewHandler(userService)
 
-	router.InitRouter(userHandler)
+	// INITIATE THE WEBSOCKET
+	hub := websocket.NewHub()
+	websocketHandler := websocket.NewHandler(hub)
+
+	router.InitRouter(userHandler, websocketHandler)
 	router.Start("0.0.0.0:8080")
 
 }
