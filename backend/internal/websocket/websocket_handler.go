@@ -48,8 +48,30 @@ func (handler *Handler) JoinRoom(context *gin.Context) {
 		return
 	}
 
-	roomId := context.Params("roomId")
+	roomId := context.Param("roomId")
 	clientId := context.Query("userId")
 	username := context.Query("username")
+
+	client := &Client{
+		Connection: connection,
+		Message:    make(chan *Message, 10),
+		ID:         clientId,
+		Username:   username,
+		RoomId:     roomId,
+	}
+
+	message := &Message{
+		Content:  "a new user has joined the room ",
+		RoomId:   roomId,
+		Username: username,
+	}
+
+	// register a client throught the register chanel
+	handler.hub.Register <- client
+	// broadcast the new message
+	handler.hub.Broadcast <- message
+
+	go client.WriteMessage()
+	client.ReadMessage(handler.hub)
 
 }

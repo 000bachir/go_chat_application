@@ -1,8 +1,13 @@
 package utils
 
+//important note : te bycrypt still shows an error to be fixed the error is that the password does not match the one stored i nthe database need to fix it the problem is inn the login endpoint
+
 import (
+	_ "crypto/rand"
 	"fmt"
 	"log"
+
+	_ "golang.org/x/crypto/argon2"
 
 	"golang.org/x/crypto/bcrypt"
 )
