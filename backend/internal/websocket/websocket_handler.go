@@ -75,3 +75,33 @@ func (handler *Handler) JoinRoom(context *gin.Context) {
 	client.ReadMessage(handler.hub)
 
 }
+
+func (handler *Handler) GetRooms(context *gin.Context) {
+
+	rooms := make([]RoomsRequestResponse, 0)
+	for _, room := range handler.hub.Rooms {
+		rooms = append(rooms, RoomsRequestResponse{
+			ID:   room.ID,
+			Name: room.Name,
+		})
+	}
+	context.JSON(http.StatusOK, rooms)
+
+}
+func (handler *Handler) GetClientsInRoom(context *gin.Context) {
+	var clients []ClientResponse
+	roomId := context.Param("roomId")
+	if _, ok := handler.hub.Rooms[roomId]; !ok {
+		clients = make([]ClientResponse, 0)
+		context.JSON(http.StatusOK, clients)
+	}
+
+	for _, client := range handler.hub.Rooms[roomId].Clients {
+		clients = append(clients, ClientResponse{
+			ID:       client.ID,
+			Username: client.Username,
+		})
+	}
+
+	context.JSON(http.StatusOK, clients)
+}

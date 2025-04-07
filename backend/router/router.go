@@ -18,6 +18,8 @@ func InitRouter(userhandler *users.Handler, websocketHandler *websocket.Handler)
 
 	Engine.POST("/ws/createRoom", websocketHandler.CreateNewRoom)
 	Engine.GET("/ws/joinRoom/:roomId", websocketHandler.JoinRoom)
+	Engine.GET("/ws/getRooms", websocketHandler.GetRooms)
+	Engine.GET("/ws/getClients/:roomId", websocketHandler.GetClientsInRoom)
 }
 
 func Start(address string) error {
