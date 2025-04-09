@@ -1,10 +1,53 @@
 import React, { ReactNode } from "react";
-import { useState } from "react";
+import { useState  } from "react";
+import { API_URL } from "@/middleware/constants/main";
+import { useRouter } from "next/router";
+import { UserInfo , AuthContext } from "@/middleware/modules/Auth_provider";
+import { useContext , useEffect } from "react";
+
+
 
 const Login = () => {
 
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
+    const { authenticated }  = useContext(AuthContext)
+    const router = useRouter()
+
+    useEffect(()=>{
+        if(authenticated){
+            router.push("/")
+            return
+        }
+    } , [authenticated])
+
+    const HandleSubmit = async (event : React.SyntheticEvent) => {
+        event.preventDefault()
+        try{
+
+            const response = await fetch( `${API_URL}/login`, {
+                method : "POST" ,
+                headers : {"Content-Type" : "Application/json"} , 
+                body : JSON.stringify({email , password})
+            })
+            const data = await response.json()
+            if(response.ok){
+                const user : UserInfo  = {
+                    username : data.username ,
+                    id : data.id
+                }
+                // nit the best practice to let the data move arround
+                localStorage.setItem('user_info' , JSON.stringify(user))
+                // redirect the user to the home page 
+                return router.push("/")
+            }
+
+
+        }catch(error){
+            console.log("Error :", error)
+        }
+
+    }
 
 
     return (
@@ -15,13 +58,20 @@ const Login = () => {
                     <input
                         type="text"
                         placeholder="Email"
-                        className="p-2 mt-4 rounded-2xl border-[1px] border-gray-900 flex items-center justify-start w-[80%]" required />
+                        className="p-2 mt-4 rounded-2xl border-[1px] border-gray-900 flex items-center justify-start w-[80%]" required
                         value={email}
-                        onChange={(e : React.ChangeEvent<HTMLInputElement>) => setEmail(e.target.value)}
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => setEmail(e.target.value)}
+                    />
 
                     <input
-                        type="password" placeholder="Password" className="p-2 mt-4 rounded-2xl border-[1px] border-gray-900 flex items-center justify-start w-[80%]" required />
-                    <button type="submit" className="bg-blue-500 p-4 rounded-2xl shadow-2xl text-2xl font-semibold text-white">
+                        type="password" 
+                        placeholder="Password" 
+                        className="p-2 mt-4 rounded-2xl border-[1px] border-gray-900 flex items-center justify-start w-[80%]" 
+                        required 
+                        value = {password}
+                        onChange ={(e : React.ChangeEvent<HTMLInputElement>) => setPassword(e.target.value)}
+                        />
+                    <button onClick={HandleSubmit} type="submit" className="bg-blue-500 p-4 rounded-2xl shadow-2xl text-2xl font-semibold text-white">
                         Login
                     </button>
                 </form>
