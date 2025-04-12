@@ -3,7 +3,9 @@ package router
 import (
 	"chat_application/internal/users"
 	"chat_application/internal/websocket"
+	"time"
 
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 )
 
@@ -11,6 +13,18 @@ var Engine *gin.Engine
 
 func InitRouter(userhandler *users.Handler, websocketHandler *websocket.Handler) {
 	Engine = gin.Default()
+
+	Engine.Use(cors.New(cors.Config{
+		AllowOrigins:     []string{"http://localhost:3000"},
+		AllowMethods:     []string{"GET", "POST"},
+		AllowHeaders:     []string{"Content-Type"},
+		ExposeHeaders:    []string{"Content-length"},
+		AllowCredentials: true,
+		AllowOriginFunc: func(origin string) bool {
+			return origin == "http://localhost:3000"
+		},
+		MaxAge: 12 * time.Hour,
+	}))
 
 	Engine.POST("/signup", userhandler.CreateNewUser)
 	Engine.POST("/login", userhandler.Login)

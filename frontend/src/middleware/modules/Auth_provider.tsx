@@ -1,5 +1,7 @@
+"use client"
+
 import { useState, createContext } from "react";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 
 
@@ -36,7 +38,7 @@ const AuthContextProvider = ({ children }: { children: React.ReactNode }) => {
         const userInfo = localStorage.getItem("user_info")
         if (!userInfo) {
             if (window.location.pathname != "signup") {
-                router.push("/login")
+                router.push("/Login")
                 return
             }
         } else {

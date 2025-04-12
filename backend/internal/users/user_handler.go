@@ -44,29 +44,6 @@ func (handle *Handler) CreateNewUser(context *gin.Context) {
 	context.JSON(http.StatusOK, response)
 }
 
-// func (h *Handler) Login(ctx *gin.Context) {
-// 	var reqUser LoginUserRequest
-
-// 	// Bind JSON to request struct
-// 	if err := ctx.ShouldBindJSON(&reqUser); err != nil {
-// 		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-// 		return
-// 	}
-
-// 	// Authenticate user via service layer
-// 	userResponse, err := h.Service.LoginUser(ctx.Request.Context(), &reqUser)
-// 	if err != nil {
-// 		// If login fails, use 401 if it's about bad credentials
-// 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-// 		return
-// 	}
-
-// 	// Set JWT as a cookie (24h, for localhost, httpOnly)
-// 	ctx.SetCookie("jwt", userResponse.AccessToken, 60*60*24, "/", "localhost", false, true)
-
-//		// Return the response struct (make sure it doesn't contain sensitive info)
-//		ctx.JSON(http.StatusOK, userResponse)
-//	}
 func (h *Handler) Login(c *gin.Context) {
 	var user LoginUserRequest
 	if err := c.ShouldBindJSON(&user); err != nil {

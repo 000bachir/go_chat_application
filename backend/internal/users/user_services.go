@@ -27,7 +27,7 @@ func (s *service) CreateNewUser(ctx context.Context, request *CreateUserRequest)
 	ctx, cancel := context.WithTimeout(ctx, s.timeout)
 	defer cancel()
 	// hashing the password
-	HashedPassword, err := utils.HashingPassword(request.Password)
+	HashedPassword, err := utils.HashPassword(request.Password)
 	if err != nil {
 		return nil, err
 	}
