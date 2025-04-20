@@ -10,7 +10,9 @@ import (
 )
 
 // this for developeent purpose the real key is gonna be changed and added later on on build time
-const secretKey string = "privateKey"
+const (
+	secretKey = "secret"
+)
 
 type service struct {
 	Repository
@@ -23,30 +25,60 @@ func NewService(repository Repository) Service {
 		time.Duration(2) * time.Second,
 	}
 }
-func (s *service) CreateNewUser(ctx context.Context, request *CreateUserRequest) (*CreateUserResponse, error) {
-	ctx, cancel := context.WithTimeout(ctx, s.timeout)
+
+// func (s *service) CreateNewUser(ctx context.Context, request *CreateUserRequest) (*CreateUserResponse, error) {
+// 	ctx, cancel := context.WithTimeout(ctx, s.timeout)
+// 	defer cancel()
+// 	// hashing the password
+// 	HashedPassword, err := utils.HashPassword(request.Password)
+// 	if err != nil {
+// 		return nil, err
+// 	}
+// 	// custom user struct received from the request
+// 	user := &User{
+// 		Username: request.Username,
+// 		Email:    request.Email,
+// 		Password: HashedPassword,
+// 	}
+// 	req, err := s.Repository.CreateNewUser(ctx, user)
+// 	if err != nil {
+// 		return nil, err
+// 	}
+// 	response := &CreateUserResponse{
+// 		ID:       strconv.Itoa(int(req.ID)),
+// 		Username: req.Username,
+// 		Email:    req.Email,
+// 	}
+// 	return response, nil
+// }
+
+func (s *service) CreateUser(c context.Context, req *CreateUserRequest) (*CreateUserResponse, error) {
+	ctx, cancel := context.WithTimeout(c, s.timeout)
 	defer cancel()
-	// hashing the password
-	HashedPassword, err := utils.HashPassword(request.Password)
+
+	hashedPassword, err := utils.HashPassword(req.Password)
 	if err != nil {
 		return nil, err
 	}
-	// custom user struct received from the request
-	user := &User{
-		Username: request.Username,
-		Email:    request.Email,
-		Password: HashedPassword,
-	}
-	req, err := s.Repository.CreateNewUser(ctx, user)
-	if err != nil {
-		return nil, err
-	}
-	response := &CreateUserResponse{
-		ID:       strconv.Itoa(int(req.ID)),
+
+	u := &User{
 		Username: req.Username,
 		Email:    req.Email,
+		Password: hashedPassword,
 	}
-	return response, nil
+
+	r, err := s.Repository.CreateUser(ctx, u)
+	if err != nil {
+		return nil, err
+	}
+
+	res := &CreateUserResponse{
+		ID:       strconv.Itoa(int(r.ID)),
+		Username: r.Username,
+		Email:    r.Email,
+	}
+
+	return res, nil
 }
 
 type myClaims struct {
@@ -55,24 +87,27 @@ type myClaims struct {
 	jwt.RegisteredClaims
 }
 
-func (s *service) LoginUser(ctx context.Context, request *LoginUserRequest) (*LoginUserResponse, error) {
+func (s *service) Login(ctx context.Context, request *LoginUserRequest) (*LoginUserResponse, error) {
 	ctx, cancel := context.WithTimeout(ctx, s.timeout)
 	defer cancel()
+
 	userLoginRequest, err := s.Repository.GetUserByEmail(ctx, request.Email)
 	if err != nil {
 		return &LoginUserResponse{}, err
 	}
+
 	err = utils.CheckPassword(request.Password, userLoginRequest.Password)
 	if err != nil {
 		return &LoginUserResponse{}, err
 	}
+
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, myClaims{
 		ID:       strconv.Itoa(int(userLoginRequest.ID)),
 		Username: userLoginRequest.Username,
 		RegisteredClaims: jwt.RegisteredClaims{
 			Issuer:    strconv.Itoa(int(userLoginRequest.ID)),
 			ExpiresAt: jwt.NewNumericDate(time.Now().Add(24 * time.Hour)),
-			IssuedAt:  jwt.NewNumericDate(time.Now()),
+			IssuedAt:  jwt.NewNumericDate(time.Now().Add(24 * time.Hour)),
 		},
 	})
 	PrivateKey, err := token.SignedString([]byte(secretKey))

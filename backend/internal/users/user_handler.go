@@ -33,7 +33,7 @@ func (handle *Handler) CreateNewUser(context *gin.Context) {
 	}
 
 	// Call the service layer to create a new user.
-	response, err := handle.Service.CreateNewUser(context.Request.Context(), &userRequest)
+	response, err := handle.Service.CreateUser(context.Request.Context(), &userRequest)
 	if err != nil {
 		// If an error occurs while creating the user, return a 500 Internal Server Error response.
 		context.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
@@ -51,7 +51,7 @@ func (h *Handler) Login(c *gin.Context) {
 		return
 	}
 
-	u, err := h.Service.LoginUser(c.Request.Context(), &user)
+	u, err := h.Service.Login(c.Request.Context(), &user)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
