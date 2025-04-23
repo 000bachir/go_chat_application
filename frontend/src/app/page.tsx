@@ -1,104 +1,114 @@
 "use client"
-
-
-import { API_URL , WS_URL } from "@/middleware/constants/main";
-import React, { useEffect, useState , useContext } from "react";
-import {v4 as uuidv4} from "uuid"
+import { API_URL, WEBSOCKET_URL } from "@/middleware/constants/main";
+import React, { useEffect, useState, useContext } from "react";
+import { v4 as uuidv4 } from "uuid"
 import { AuthContext } from "@/middleware/modules/Auth_provider";
-import WebSocketProvider from "@/middleware/modules/Websocket_provider";
 import { WebsocketContext } from "@/middleware/modules/Websocket_provider";
 import { useRouter } from "next/navigation";
 
 
 const Home = () => {
-  const [rooms , setRooms] = useState<{id : string , name : string}[]>([])
-
-  const [newRoom , setNewRoom] = useState("")
-
+  const [rooms, setRooms] = useState<{ id: string, name: string }[]>([])
+  const [roomName, setNewRoom] = useState("")
   const { user } = useContext(AuthContext)
-
-  const {setConnection} = useContext(WebsocketContext)
-
+  const { setConnection } = useContext(WebsocketContext)
   const router = useRouter()
 
-  const getRooms = async() => {
-    try{
-      const response = await fetch(`${API_URL}/ws/getRooms`,{
-        method : 'GET'
+  const getRooms = async () => {
+    try {
+      const response = await fetch(`${API_URL}/ws/getRooms`, {
+        method: 'GET'
       })
 
       const data = await response.json()
-      if(response.ok){
+      if (response.ok) {
         setRooms(data)
       }
-    }catch(err){
+    } catch (err) {
       console.log(err)
     }
   }
 
-  useEffect(()=>{
+  useEffect(() => {
     getRooms()
-  })
+  }, [])
 
-  const HandlerSubmit = async (event : React.SyntheticEvent) => {
+  const HandlerSubmit = async (event: React.SyntheticEvent) => {
     event.preventDefault()
-    try{
+    if(!roomName.trim()) return //* prevent empty room creation
+    try {
       setNewRoom('')
-      const response = await fetch(`${API_URL}/ws/createNewRoom` , {
-        method : 'POST',
-        headers : { 'Content-range' : 'application/json'} , 
-        credentials : 'include',
-        body : JSON.stringify({
-          id : uuidv4(),
-          name : newRoom
+      const response = await fetch(`${API_URL}/ws/createRoom`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({
+          id: uuidv4(),
+          name: roomName
         }),
       })
-      if(response.ok){
+      if (response.ok) {
         getRooms()
       }
-    }catch(err){ 
+    } catch (err) {
       console.log(err)
     }
   }
 
 
-  const JoinRoom = (roomId : string) => {
-    const websocketConnection = new WebSocket(`${WS_URL}/ws/joinRoom/${roomId}?userId=${user.id}username=${user.username}`)
-    if(websocketConnection.OPEN){
+  const JoinRoom = (roomId: string) => {
+    const websocketConnection = new WebSocket(`${WEBSOCKET_URL}/ws/joinRoom/${roomId}?userId=${user.id}username=${user.username}`)
+    if (websocketConnection.OPEN) {
       setConnection(websocketConnection)
       router.push('/chat')
       return
     }
   }
 
-  return(
-    <main className="h-auto w-[95%] mx-auto relative overflow-hiddeb">
-      <article className="h-dvh w-full relative overflow-hidden">
-        <section className="h-full w-full relative flex items-center justify-center">
-          <input value={newRoom} onChange={(e)=> e.target.value} type="text" placeholder="room title" required className="p-4 w-80 rounded-2xl border border-black shadow-2xl" />
-          <button className="p-4 w-40 rounded-2xl bg-amber-500 text-xl text-white" onClick={HandlerSubmit}>
-            Create Room
-          </button>
-        </section>
-      </article>
-      <article className="h-dvh w-full relative overflow-hidden">
-
-        <section className="h-full w-[95%] mx-auto relative flex items-center justify-center flex-col gap-4">
-          <h1 className="text-3xl text-center text-blue-500">rooms that are available</h1>
-          {rooms.map((room : any , index : number)=>(
-            <div key={index} className="h-32 w-72 border border-blue-500 flex items-center justify-center gap-4">
-              <h1>
-                {room.name}
-              </h1>
-              <button type="submit" className="bg-red-500 text-white text-lg p-4 cursor-pointer" onClick={()=> JoinRoom(room.id)}>
-                  Enter Room
-              </button>
+    return (
+      <>
+        <div className='my-8 px-4 md:mx-32 w-full h-full'>
+          <div className='flex justify-center mt-3 p-5'>
+            <input
+              type='text'
+              className='border border-grey p-2 rounded-md focus:outline-none focus:border-blue'
+              placeholder='room name'
+              value={roomName}
+              onChange={(e) => setNewRoom(e.target.value)}
+            />
+            <button
+              className='bg-blue border text-black cursor-pointer rounded-md p-2 md:ml-4'
+              onClick={HandlerSubmit}
+            >
+              create room
+            </button>
+          </div>
+          <div className='mt-6'>
+            <div className='font-bold'>Available Rooms</div>
+            <div className='grid grid-cols-1 md:grid-cols-5 gap-4 mt-6'>
+              {rooms.map((room, index) => (
+                <div
+                  key={index}
+                  className='border border-blue p-4 flex items-center rounded-md w-full'
+                >
+                  <div className='w-full'>
+                    <div className='text-sm'>room</div>
+                    <div className='text-blue font-bold text-lg'>{room.name}</div>
+                  </div>
+                  <div className=''>
+                    <button
+                      className='px-4 text-black cursor-pointer bg-blue rounded-md'
+                      onClick={() => JoinRoom(room.id)}
+                    >
+                      join
+                    </button>
+                  </div>
+                </div>
+              ))}
             </div>
-          ))}
-        </section>
-
-      </article>
-    </main>
+          </div>
+        </div>
+      </>
   )
 }
 

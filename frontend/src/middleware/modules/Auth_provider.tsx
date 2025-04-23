@@ -1,16 +1,8 @@
 "use client"
-
 import { useState, createContext } from "react";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
-
-
-
-export type UserInfo = {
-    username: string,
-    id: string
-}
-
+export type UserInfo = {username: string,id: string}
 export const AuthContext = createContext<
     {
         authenticated: boolean,
@@ -27,8 +19,6 @@ export const AuthContext = createContext<
     },
     setUser: () => { }
 })
-
-
 const AuthContextProvider = ({ children }: { children: React.ReactNode }) => {
     const [authenticated, setAuthenticated] = useState(false)
     const [user, setUser] = useState<UserInfo>({ username: "", id: "" })
@@ -37,7 +27,7 @@ const AuthContextProvider = ({ children }: { children: React.ReactNode }) => {
     useEffect(() => {
         const userInfo = localStorage.getItem("user_info")
         if (!userInfo) {
-            if (window.location.pathname != "signup") {
+            if (window.location.pathname != "/signup") {
                 router.push("/Login")
                 return
             }
@@ -52,8 +42,6 @@ const AuthContextProvider = ({ children }: { children: React.ReactNode }) => {
             setAuthenticated(true)
         }
     }, [authenticated])
-
-
     return (
         <AuthContext.Provider
             value={
@@ -69,5 +57,4 @@ const AuthContextProvider = ({ children }: { children: React.ReactNode }) => {
         </AuthContext.Provider>
     )
 }
-
 export default AuthContextProvider

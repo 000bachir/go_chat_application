@@ -13,8 +13,8 @@ const Login = () => {
     useEffect(() => {
         console.log("Login component rendered. authenticated:", authenticated);
         if (authenticated) {
-            console.log("authenticated is true, pushing to /");
             router.push("/");
+            console.log("authenticated is true, pushing to /");
             console.log("Pushed to /, returning from useEffect");
             return;
         } else {
@@ -58,6 +58,7 @@ const Login = () => {
                         className="p-2 mt-4 rounded-2xl border-[1px] border-gray-900 flex items-center justify-start w-[80%]" required
                         value={email}
                         onChange={(e: React.ChangeEvent<HTMLInputElement>) => setEmail(e.target.value)}
+                        onSubmit={HandleSubmit}
                     />
 
                     <input
@@ -68,7 +69,7 @@ const Login = () => {
                         value={password}
                         onChange={(e: React.ChangeEvent<HTMLInputElement>) => setPassword(e.target.value)}
                     />
-                    <button onClick={HandleSubmit} type="submit" className="bg-blue-500 p-4 rounded-2xl shadow-2xl text-2xl font-semibold text-white">
+                    <button type="submit" className="cursor-pointer bg-blue-500 p-4 rounded-2xl shadow-2xl text-2xl font-semibold text-white">
                         Login
                     </button>
                 </form>
