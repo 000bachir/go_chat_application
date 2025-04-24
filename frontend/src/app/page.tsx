@@ -57,7 +57,7 @@ const Home = () => {
 
 
   const JoinRoom = (roomId: string) => {
-    const websocketConnection = new WebSocket(`${WEBSOCKET_URL}/ws/joinRoom/${roomId}?userId=${user.id}username=${user.username}`)
+    const websocketConnection = new WebSocket(`${WEBSOCKET_URL}/ws/joinRoom/${roomId}?userId=${user.id}&username=${user.username}`)
     if (websocketConnection.OPEN) {
       setConnection(websocketConnection)
       router.push('/chat')

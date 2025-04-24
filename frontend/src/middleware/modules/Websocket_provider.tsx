@@ -10,7 +10,7 @@ export const WebsocketContext = createContext<{
     setConnection: (connect: Connection) => void
 }>({
     connection: null,
-    setConnection: () => { }
+    setConnection: () => {}
 })
 
 

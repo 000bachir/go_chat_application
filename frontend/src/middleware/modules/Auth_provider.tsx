@@ -25,31 +25,34 @@ const AuthContextProvider = ({ children }: { children: React.ReactNode }) => {
     const router = useRouter()
 
     useEffect(() => {
-        const userInfo = localStorage.getItem("user_info")
-        if (!userInfo) {
-            if (window.location.pathname != "/signup") {
-                router.push("/Login")
-                return
+        try{
+            const userInfo = localStorage.getItem("user_info")
+            if (!userInfo) {
+                if (window.location.pathname !== "/signup") {
+                    router.push("/Login")
+                    return
+                }
+            } else {
+                const parsedUser: UserInfo = JSON.parse(userInfo)
+                if (parsedUser && parsedUser.username && parsedUser.id) {
+                    setUser(parsedUser)                    
+                    setAuthenticated(true)
+                }
             }
-        } else {
-            const user: UserInfo = JSON.parse(userInfo)
-            if (user) {
-                setUser({
-                    username: user.username,
-                    id: user.id
-                })
-            }
-            setAuthenticated(true)
+        }catch(err){
+            console.error("Error parsing user_info from localStorage", err);
+            localStorage.removeItem("user_info"); // reset broken data
         }
-    }, [authenticated])
+
+    }, [])  // run only on mount
     return (
         <AuthContext.Provider
             value={
                 {
-                    authenticated: authenticated,
-                    setAuthenticated: setAuthenticated,
-                    user: user,
-                    setUser: setUser
+                    authenticated,
+                    setAuthenticated,
+                    user,
+                    setUser,
                 }
             }
         >

@@ -6,18 +6,18 @@ import (
 	"github.com/gorilla/websocket"
 )
 
+type Message struct {
+	RoomId   string `json:"roomId"`
+	Username string `json:"username"`
+	Content  string `json:"content"`
+}
+
 type Client struct {
 	Connection *websocket.Conn
 	Message    chan *Message
 	ID         string `json:"id"`
 	Username   string `json:"username"`
 	RoomId     string `json:"roomId"`
-}
-
-type Message struct {
-	RoomId   string `json:"roomId"`
-	Username string `json:"username"`
-	Content  string `json:"content"`
 }
 
 func (client *Client) WriteMessage() {

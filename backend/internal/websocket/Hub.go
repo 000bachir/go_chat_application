@@ -25,7 +25,6 @@ func NewHub() *Hub {
 	}
 }
 
-// Run is the main loop of the Hub. It listens for events and handles them accordingly.
 func (hub *Hub) Run() {
 	for {
 		select {
@@ -36,40 +35,35 @@ func (hub *Hub) Run() {
 
 				if _, ok := room.Clients[client.ID]; !ok {
 					room.Clients[client.ID] = client
+
+					// Send a message when user joins
+					hub.Broadcast <- &Message{
+						Content:  "user has joined the chat",
+						RoomId:   client.RoomId,
+						Username: client.Username,
+					}
 				}
 			}
-			// room, exists := hub.Rooms[client.RoomId]
-			// if !exists {
-			// 	// If the room doesn't exist, create it
-			// 	room = &Room{Clients: make(map[string]*Client)}
-			// 	hub.Rooms[client.RoomId] = room
-			// }
-
-			// // Add or update the client in the room
-			// room.Clients[client.ID] = client
-
-		// Handle client unregistration (leaving the room)
 		case client := <-hub.Unregister:
 			if _, ok := hub.Rooms[client.RoomId]; ok {
 				if _, ok := hub.Rooms[client.RoomId].Clients[client.ID]; ok {
 					if len(hub.Rooms[client.RoomId].Clients) != 0 {
 						hub.Broadcast <- &Message{
-							Content:  "user has left the chat",
+							Content:  "user left the chat",
 							RoomId:   client.RoomId,
 							Username: client.Username,
 						}
 					}
 
-					delete(hub.Rooms[client.ID].Clients, client.ID)
+					delete(hub.Rooms[client.RoomId].Clients, client.ID)
 					close(client.Message)
+
 				}
 			}
-
-		// Handle broadcasting messages to all clients in a room
-		case message := <-hub.Broadcast:
-			if _, ok := hub.Rooms[message.RoomId]; ok {
-				for _, client := range hub.Rooms[message.RoomId].Clients {
-					client.Message <- message
+		case msg := <-hub.Broadcast:
+			if _, ok := hub.Rooms[msg.RoomId]; ok {
+				for _, client := range hub.Rooms[msg.RoomId].Clients {
+					client.Message <- msg
 				}
 			}
 		}
