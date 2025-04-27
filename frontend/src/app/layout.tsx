@@ -1,19 +1,20 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+// import { Geist, Geist_Mono } from "next/font/google";
 import AuthContextProvider from "@/middleware/modules/Auth_provider";
 import WebSocketProvider from "@/middleware/modules/Websocket_provider";
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
+import Navbar from "@/components/Navbar/Navbar";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
+// const geistSans = Geist({
+//   variable: "--font-geist-sans",
+//   subsets: ["latin"],
+// });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
+// const geistMono = Geist_Mono({
+//   variable: "--font-geist-mono",
+//   subsets: ["latin"],
+// });
 
 export const metadata: Metadata = {
   title: "Chat application",
@@ -31,8 +32,10 @@ export default function RootLayout({
 
         <WebSocketProvider>
           <body
-            className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+            // className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+            className=""
           >
+            <Navbar />
             <ThemeProvider
             attribute="class"
             defaultTheme="system"

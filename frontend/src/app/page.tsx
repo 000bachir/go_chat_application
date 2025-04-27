@@ -4,6 +4,8 @@ import Navbar from "@/components/Navbar/Navbar"
 import HeroPage from "@/components/Hero/Hero"
 import About from "@/components/About/About"
 import PeopleReaction from "@/components/people-reaction/PeopleReaction"
+import Redirection from "@/components/redirection/Redirection"
+import Footer from "@/components/Footer/Footer"
 
 const HomePage = () => {
   return(
@@ -12,6 +14,8 @@ const HomePage = () => {
         <HeroPage />
         <About />
         <PeopleReaction />
+        <Redirection />
+        <Footer />
     </>
   )
 }

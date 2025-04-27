@@ -30,7 +30,7 @@ export default function PeopleReaction() {
                     <div className="h-20 w-full">
                         <h1 className="text-3xl font-semibold text-center">let's be serious for a second , am gonna show why you should choose us</h1>
                     </div>
-                    <div className="h-dvh w-full flex items-center justify-center">
+                    <div className="h-[30rem] w-full flex items-center justify-center">
                         <div className="h-[80%] aspect-square flex items-center justify-center ">
 
                             <Accordion type="single" collapsible className="w-full">
