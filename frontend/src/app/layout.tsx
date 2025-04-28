@@ -5,6 +5,7 @@ import WebSocketProvider from "@/middleware/modules/Websocket_provider";
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
 import Navbar from "@/components/Navbar/Navbar";
+import Footer from "@/components/Footer/Footer";
 
 // const geistSans = Geist({
 //   variable: "--font-geist-sans",
@@ -43,6 +44,8 @@ export default function RootLayout({
             disableTransitionOnChange
             >
               {children}
+              <Footer />
+
             </ThemeProvider>
 
           </body>

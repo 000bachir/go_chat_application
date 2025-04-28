@@ -21,7 +21,7 @@ export default function Navbar(){
                         </Link>
                     </div>
                     <div id="login-section" className="">
-                        <Link href={"/signup"}>
+                        <Link href={"/register"}>
                             <Icon icon="game-icons:plague-doctor-profile" width="32" height="32" />
                         </Link>
                     </div>
