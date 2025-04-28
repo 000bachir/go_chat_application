@@ -1,6 +1,6 @@
 import { motion } from "motion/react";
 import Image from "next/image";
-import HappyCouple from "../../../public/images/happy-couple.webp";
+import HappyCouple from "../../../../public/images/happy-couple.webp";
 import {
     Accordion,
     AccordionContent,

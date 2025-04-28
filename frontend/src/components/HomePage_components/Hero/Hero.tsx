@@ -1,5 +1,5 @@
-import Image from 'next/image'
-import Heroimage from "../../../public/images/chat-application.webp"
+import Image from 'next/image';
+import Heroimage from "../../../../public/images/chat-application.webp";
 export default function HeroPage(){
     return(
         <>

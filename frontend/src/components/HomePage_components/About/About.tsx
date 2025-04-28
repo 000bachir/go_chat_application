@@ -1,6 +1,6 @@
 import { motion } from "motion/react";
 import Image from "next/image";
-import chatImage from "../../../public/images/chat-image.webp"
+import chatImage from "../../../../public/images/chat-image.webp"
 
 export default function About(){
     return(
