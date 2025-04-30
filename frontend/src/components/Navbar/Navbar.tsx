@@ -16,8 +16,8 @@ export default function Navbar(){
                         <Link href={"/about"}>
                             <h1 className="font-semibold text-xl">about</h1>
                         </Link>
-                        <Link href={"/contact"}>
-                            <h1 className="font-semibold text-xl">contact</h1>
+                        <Link href={"/rooms"}>
+                            <h1 className="font-semibold text-xl">Rooms</h1>
                         </Link>
                     </div>
                     <div id="login-section" className="">

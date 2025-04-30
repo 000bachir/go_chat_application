@@ -3,29 +3,14 @@ import * as motion from "motion/react-client"
 import type { Variants } from "framer-motion"
 import Alg from "../../../public/images/algerian-flag.webp"
 import Image from "next/image"
+import { Icon } from "@iconify/react/dist/iconify.js"
+import Link from "next/link"
+
 
 
 
 export default function Intro() {
 
-
-    // const cardContainer: Variants = {
-    //     offscreen: {
-    //         opacity : 0 ,
-    //         scale : 0
-    //     },
-    //     onscreen: {
-    //         opacity: 1,
-    //         scale : 1,
-    //         transition: {
-    //             type: 'spring',
-    //             bounce: 0.2,
-    //             duration: 1
-    //         }
-    //     }
-    // }
-
-    const position: [number, number] = [51.505, -0.09];
     return (
         <>
             <section className="h-44 w-full relative grid grid-cols-2 border-b-[1px] border-gray-600">
@@ -50,11 +35,16 @@ export default function Intro() {
             </section>
             <section className="h-dvh w-full relative overflow-hidden grid grid-cols-2">
                 <div className="h-full w-full border-r-[1px] border-gray-600 col-span-1 grid grid-rows-2" id="left-side">
-                    <div className="w-full relative h-full border-b-[1px] border-gray-600 overflow-hidden ">
-                        <Image src={Alg} alt="algerian flag" className="object-cover h-full w-full" loading="lazy" />
+                    <div className="w-full relative h-full border-b-[1px] border-gray-600 overflow-hidden flex items-center justify-center ">
+                        <div className="h-72 aspect-square shadow-2xs border border-white rounded-full overflow-hidden flex items-center justify-center">
+                            <Image src={Alg} alt="algerian flag" height={600} width={600} loading="lazy" />
+
+                        </div>
+
                     </div>
-                    <div className="w-full relative h-full ">
-                        
+                    <div className="w-full relative h-full flex items-center justify-center flex-col gap-6 ">
+                        <h1 className="text-4xl font-semibold text-center px-6">Talk is cheap , just click on one of this icons to see connect with me </h1>
+                        <Icon icon="pixel:arrow-right-solid" width="72" height="72" />
                     </div>
                 </div>
                 <div className="h-full w-full border-r-[1px] col-span-1 grid grid-rows-2" id="left-right">
@@ -65,7 +55,12 @@ export default function Intro() {
                         <p className="font-semibold text-lg">And I suck at design 😒 and pretty much anything related to smart stuff</p>
                         <p className="font-semibold text-sm text-gray-300">I know flexbox if that helps 😗</p>
                     </div>
-                    <div className="w-full relative h-full "></div>
+                    <div className="w-full relative h-full flex items-center justify-evenly">
+                        <Link href={""}><Icon icon="skill-icons:github-light" width="56" height="56" /></Link>
+                        <Link href={""}><Icon icon="skill-icons:gmail-dark" width="56" height="56" /></Link>
+                        <Link href={""}><Icon icon="cib:upwork" width="56" height="56" /></Link>
+                        <Link href={""}><Icon icon="mingcute:linkedin-line" width="56" height="56" /></Link>
+                    </div>
                 </div>
             </section>
         </>
